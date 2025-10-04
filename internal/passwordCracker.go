@@ -80,7 +80,7 @@ func (pc *PasswordCracker) worker(validator func(string) (bool, error), wg *sync
 			elapsed := time.Since(pc.StartTime).Seconds()
 			attemptsFloat := new(big.Float).SetInt(pc.Attempts)
 			attemptsPerSec := new(big.Float).Quo(attemptsFloat, big.NewFloat(elapsed))
-			fmt.Printf("\r\rElapsed: %s, \tAttempts: %s, \tAttempts/sec: %s, \tCurrent: %s\n", time.Since(pc.StartTime), pc.Attempts.String(), attemptsPerSec.Text('f', 2), string(currentPassword))
+			fmt.Printf("\rElapsed: %s, \tAttempts: %s, \tAttempts/sec: %s, \tCurrent: %s", time.Since(pc.StartTime), pc.Attempts.String(), attemptsPerSec.Text('f', 2), string(currentPassword))
 		}
 	}
 }
@@ -98,6 +98,8 @@ func (pc *PasswordCracker) Crack(validator func(string) (bool, error)) string {
 		wg.Wait()
 		close(done)
 	}()
+
+	fmt.Println()
 
 	// select will wait for either channel to receive a value
 	select {

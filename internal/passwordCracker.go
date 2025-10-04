@@ -112,9 +112,15 @@ func (pc *PasswordCracker) Crack(validator func(string) (bool, error)) string {
 	case password := <-pc.FoundChan:
 		wg.Wait()
 		pc.ProgressBar.Finish()
+
+		fmt.Println()
+		fmt.Println()
 		return password
 	case <-done:
 		pc.ProgressBar.Finish()
+
+		fmt.Println()
+		fmt.Println()
 		return ""
 	}
 }

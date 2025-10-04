@@ -72,4 +72,5 @@ func main() {
 
 	elapsed := time.Since(pc.StartTime)
 	fmt.Printf("Elapsed time: %s\n", elapsed)
+	fmt.Printf("Total attempts: %s\n", pc.Attempts.String())
 }

@@ -67,14 +67,6 @@ func (pc *PasswordCracker) worker(validator func(string) (bool, error), wg *sync
 				return
 			}
 
-			if found {
-				pc.FoundChan <- string(currentPassword)
-				pc.Found = true
-				return
-			}
-
-			currentPassword = utils.RotateString(currentPassword, 1, pc.Charset)
-
 			pc.ProgressMutex.Lock()
 			pc.Attempts = new(big.Int).Add(pc.Attempts, big.NewInt(1))
 
@@ -87,6 +79,14 @@ func (pc *PasswordCracker) worker(validator func(string) (bool, error), wg *sync
 			}
 
 			pc.ProgressMutex.Unlock()
+
+			if found {
+				pc.FoundChan <- string(currentPassword)
+				pc.Found = true
+				return
+			}
+
+			currentPassword = utils.RotateString(currentPassword, 1, pc.Charset)
 		}
 	}
 }

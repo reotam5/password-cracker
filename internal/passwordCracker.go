@@ -7,6 +7,8 @@ import (
 	"time"
 
 	utils "reotamai/assignment3/pkg/utils"
+
+	"github.com/schollz/progressbar/v3"
 )
 
 type PasswordCracker struct {
@@ -25,6 +27,7 @@ type PasswordCracker struct {
 	StartTime     time.Time
 	Attempts      *big.Int
 	ProgressMutex sync.Mutex
+	ProgressBar   *progressbar.ProgressBar
 }
 
 func (pc *PasswordCracker) getAndIncrementStartingChars() []rune {
@@ -74,18 +77,23 @@ func (pc *PasswordCracker) worker(validator func(string) (bool, error), wg *sync
 
 			pc.ProgressMutex.Lock()
 			pc.Attempts = new(big.Int).Add(pc.Attempts, big.NewInt(1))
-			pc.ProgressMutex.Unlock()
 
-			// delete previous print line and print new one
-			elapsed := time.Since(pc.StartTime).Seconds()
-			attemptsFloat := new(big.Float).SetInt(pc.Attempts)
-			attemptsPerSec := new(big.Float).Quo(attemptsFloat, big.NewFloat(elapsed))
-			fmt.Printf("\rElapsed: %s, \tAttempts: %s, \tAttempts/sec: %s, \tCurrent: %s", time.Since(pc.StartTime), pc.Attempts.String(), attemptsPerSec.Text('f', 2), string(currentPassword))
+			// update progress bar every 1000 attempts
+			if new(big.Int).Mod(pc.Attempts, big.NewInt(1000)).Cmp(big.NewInt(0)) == 0 {
+				elapsed := time.Since(pc.StartTime).Seconds()
+				attemptsFloat := new(big.Float).SetInt(pc.Attempts)
+				attemptsPerSec := new(big.Float).Quo(attemptsFloat, big.NewFloat(elapsed))
+				pc.ProgressBar.Describe(fmt.Sprintf("Attempts: %s, Attempts/sec: %s, Current: %s", pc.Attempts.String(), attemptsPerSec.Text('f', 2), string(currentPassword)))
+			}
+
+			pc.ProgressMutex.Unlock()
 		}
 	}
 }
 
 func (pc *PasswordCracker) Crack(validator func(string) (bool, error)) string {
+	pc.ProgressBar = progressbar.NewOptions(-1)
+
 	var wg sync.WaitGroup
 	wg.Add(pc.NumWorkers)
 
@@ -99,14 +107,14 @@ func (pc *PasswordCracker) Crack(validator func(string) (bool, error)) string {
 		close(done)
 	}()
 
-	fmt.Println()
-
 	// select will wait for either channel to receive a value
 	select {
 	case password := <-pc.FoundChan:
 		wg.Wait()
+		pc.ProgressBar.Finish()
 		return password
 	case <-done:
+		pc.ProgressBar.Finish()
 		return ""
 	}
 }

@@ -40,7 +40,7 @@ func main() {
 		MinLength:  1,
 		MaxLength:  256,
 		NumWorkers: numThreads,
-		BatchSize:  10000,
+		BatchSize:  10,
 
 		FoundChan: make(chan string, 1),
 

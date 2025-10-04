@@ -80,7 +80,7 @@ func (pc *PasswordCracker) worker(validator func(string) (bool, error), wg *sync
 			elapsed := time.Since(pc.StartTime).Seconds()
 			attemptsFloat := new(big.Float).SetInt(pc.Attempts)
 			attemptsPerSec := new(big.Float).Quo(attemptsFloat, big.NewFloat(elapsed))
-			fmt.Printf("\rElapsed: %s, \tAttempts: %s, \tAttempts/sec: %s, \tCurrent: %s", time.Since(pc.StartTime), pc.Attempts.String(), attemptsPerSec.Text('f', 2), string(currentPassword))
+			fmt.Printf("\r\rElapsed: %s, \tAttempts: %s, \tAttempts/sec: %s, \tCurrent: %s\n", time.Since(pc.StartTime), pc.Attempts.String(), attemptsPerSec.Text('f', 2), string(currentPassword))
 		}
 	}
 }

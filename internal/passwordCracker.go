@@ -47,13 +47,13 @@ func (pc *PasswordCracker) worker(validator func(string) (bool, error), wg *sync
 		currentPassword := pc.getAndIncrementStartingChars()
 
 		for i := 0; i < pc.BatchSize; i++ {
+			// other thread found the password
 			if pc.Found {
-				fmt.Println("Worker exiting, password found by another worker.")
 				return
 			}
 
+			// password not found within max length
 			if len(currentPassword) > pc.MaxLength {
-				fmt.Printf("Worker exiting, exceeded max password length.%s\n", string(currentPassword))
 				return
 			}
 

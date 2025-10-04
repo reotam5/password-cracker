@@ -6,7 +6,9 @@ import (
 )
 
 func MakeHash(plaintext, algorithm, salt string) (string, error) {
-	hash, err := exec.Command("mkpasswd", "-m", "-s", algorithm, "--", plaintext, salt).Output()
+	cmd := exec.Command("mkpasswd", "-m", algorithm, "-s", "-S", salt)
+	cmd.Stdin = strings.NewReader(plaintext)
+	hash, err := cmd.Output()
 
 	if err != nil {
 		return "", err

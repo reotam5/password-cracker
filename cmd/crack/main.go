@@ -31,9 +31,10 @@ func main() {
 	}
 
 	fmt.Printf("Cracking password for user: %s\n", shadowResult.Username)
-	fmt.Printf("Using algorithm: %s\n", shadowResult.Algorithm)
-	fmt.Printf("Using salt: %s\n", shadowResult.Salt)
-	fmt.Printf("Using hash: %s\n", shadowResult.Hash)
+	fmt.Printf("Algorithm: %s\n", shadowResult.Algorithm)
+	fmt.Printf("Salt: %s\n", shadowResult.Salt)
+	fmt.Printf("Hash: %s\n", shadowResult.Hash)
+	fmt.Printf("Threads: %d\n", numThreads)
 
 	pc := &internal.PasswordCracker{
 		Charset:    []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#%^&*()_+-=.,:;?"),

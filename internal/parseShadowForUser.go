@@ -13,6 +13,7 @@ type ShadowResult struct {
 	Salt       string
 	Hash       string
 	Parameters string
+	Raw        string
 }
 
 var HashAlgorithms = map[string]string{
@@ -64,6 +65,7 @@ func ParseShadowForUser(shadowPath string, username string) (*ShadowResult, erro
 
 	hashParts := strings.Split(hashField, "$")
 	shadowResult := &ShadowResult{}
+	shadowResult.Raw = hashField
 
 	if len(hashParts) == 4 {
 		// $algo$salt$hash

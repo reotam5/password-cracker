@@ -8,6 +8,8 @@ import (
 	"time"
 
 	"reotamai/assignment3/internal"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 func main() {
@@ -56,6 +58,13 @@ func main() {
 	}
 
 	password := pc.CreateWorkers(func(attempt string) (bool, error) {
+
+		// bcrypt is handled differently because its hash changes every time
+		if shadowResult.Algorithm == "bcrypt" {
+			err := bcrypt.CompareHashAndPassword([]byte(shadowResult.Raw), []byte(attempt))
+			return err == nil, nil
+		}
+
 		attemptHash, err := internal.MakeHash(attempt, shadowResult.Algorithm, shadowResult.Salt, shadowResult.Parameters)
 
 		if err != nil {

@@ -55,7 +55,7 @@ func main() {
 		pc.NextStartingChars[i] = pc.Charset[0]
 	}
 
-	password := pc.Crack(func(attempt string) (bool, error) {
+	password := pc.CreateWorkers(func(attempt string) (bool, error) {
 		attemptHash, err := internal.MakeHash(attempt, shadowResult.Algorithm, shadowResult.Salt)
 
 		if err != nil {

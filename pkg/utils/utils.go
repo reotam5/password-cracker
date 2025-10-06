@@ -25,8 +25,8 @@ func FindCharsetIndex(charset []rune, char rune) int {
 	return -1
 }
 
-// stringToIndex maps a string to its index in the sequence
-func stringToIndex(s, charset []rune) int {
+// permutationToIndex maps a string to its index in the sequence
+func permutationToIndex(s, charset []rune) int {
 	k := len(charset)
 	length := len(s)
 
@@ -46,8 +46,8 @@ func stringToIndex(s, charset []rune) int {
 	return index
 }
 
-// nthSequence maps index -> string in sequence
-func nthSequence(n int, charset []rune) []rune {
+// indexToPermutation maps index -> string in sequence
+func indexToPermutation(n int, charset []rune) []rune {
 	k := len(charset)
 
 	// find length
@@ -72,6 +72,6 @@ func nthSequence(n int, charset []rune) []rune {
 
 // nextNth returns the nth string after start using the charset
 func RotateString(start []rune, step int, charset []rune) []rune {
-	startIndex := stringToIndex(start, charset)
-	return nthSequence(startIndex+step, charset)
+	startIndex := permutationToIndex(start, charset)
+	return indexToPermutation(startIndex+step, charset)
 }

@@ -30,7 +30,7 @@ type PasswordCracker struct {
 	ProgressBar   *progressbar.ProgressBar
 }
 
-func (pc *PasswordCracker) getAndIncrementStartingChars() []rune {
+func (pc *PasswordCracker) getAssignedCharsAndRotate() []rune {
 	pc.AssignmentMutex.Lock()
 	defer pc.AssignmentMutex.Unlock()
 
@@ -42,12 +42,12 @@ func (pc *PasswordCracker) getAndIncrementStartingChars() []rune {
 	return current
 }
 
-func (pc *PasswordCracker) worker(validator func(string) (bool, error), wg *sync.WaitGroup) {
+func (pc *PasswordCracker) crack(validator func(string) (bool, error), wg *sync.WaitGroup) {
 	defer wg.Done()
 
 	// while other threads haven't found the password
 	for !pc.Found {
-		currentPassword := pc.getAndIncrementStartingChars()
+		currentPassword := pc.getAssignedCharsAndRotate()
 
 		for i := 0; i < pc.BatchSize; i++ {
 			// other thread found the password
@@ -91,14 +91,14 @@ func (pc *PasswordCracker) worker(validator func(string) (bool, error), wg *sync
 	}
 }
 
-func (pc *PasswordCracker) Crack(validator func(string) (bool, error)) string {
+func (pc *PasswordCracker) CreateWorkers(validator func(string) (bool, error)) string {
 	pc.ProgressBar = progressbar.NewOptions(-1)
 
 	var wg sync.WaitGroup
 	wg.Add(pc.NumWorkers)
 
 	for i := 0; i < pc.NumWorkers; i++ {
-		go pc.worker(validator, &wg)
+		go pc.crack(validator, &wg)
 	}
 
 	done := make(chan struct{})

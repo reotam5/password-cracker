@@ -8,10 +8,11 @@ import (
 )
 
 type ShadowResult struct {
-	Username  string
-	Algorithm string
-	Salt      string
-	Hash      string
+	Username   string
+	Algorithm  string
+	Salt       string
+	Hash       string
+	Parameters string
 }
 
 var HashAlgorithms = map[string]string{
@@ -64,8 +65,8 @@ func ParseShadowForUser(shadowPath string, username string) (*ShadowResult, erro
 	hashParts := strings.Split(hashField, "$")
 	shadowResult := &ShadowResult{}
 
-	if len(hashParts) >= 4 {
-		// $algo$salt$hash$....
+	if len(hashParts) == 4 {
+		// $algo$salt$hash
 		if _, exists := HashAlgorithms[hashParts[1]]; !exists {
 			return nil, fmt.Errorf("unsupported hash algorithm: %s", hashParts[1])
 		}
@@ -74,6 +75,18 @@ func ParseShadowForUser(shadowPath string, username string) (*ShadowResult, erro
 		shadowResult.Algorithm = HashAlgorithms[hashParts[1]]
 		shadowResult.Salt = hashParts[2]
 		shadowResult.Hash = hashParts[3]
+		shadowResult.Parameters = ""
+	} else if len(hashParts) == 5 {
+		// $algo$params$salt$hash
+		if _, exists := HashAlgorithms[hashParts[1]]; !exists {
+			return nil, fmt.Errorf("unsupported hash algorithm: %s", hashParts[1])
+		}
+
+		shadowResult.Username = username
+		shadowResult.Algorithm = HashAlgorithms[hashParts[1]]
+		shadowResult.Parameters = hashParts[2]
+		shadowResult.Salt = hashParts[3]
+		shadowResult.Hash = hashParts[4]
 	} else {
 		return nil, fmt.Errorf("unsupported hash format for user %s", username)
 	}

@@ -56,7 +56,7 @@ func main() {
 	}
 
 	password := pc.CreateWorkers(func(attempt string) (bool, error) {
-		attemptHash, err := internal.MakeHash(attempt, shadowResult.Algorithm, shadowResult.Salt)
+		attemptHash, err := internal.MakeHash(attempt, shadowResult.Algorithm, shadowResult.Salt, shadowResult.Parameters)
 
 		if err != nil {
 			return false, err

@@ -31,6 +31,8 @@ type PasswordCracker struct {
 }
 
 func (pc *PasswordCracker) getAssignedCharsAndRotate() []rune {
+	// this is sort of like a queue, we assign a batch of passwords to a worker and then rotate the starting chars for the next worker
+	// we do this with a mutex
 	pc.AssignmentMutex.Lock()
 	defer pc.AssignmentMutex.Unlock()
 
@@ -67,6 +69,7 @@ func (pc *PasswordCracker) crack(validator func(string) (bool, error), wg *sync.
 				return
 			}
 
+			// we don't need this mutex if we don't need insight analysis
 			pc.ProgressMutex.Lock()
 			pc.Attempts = new(big.Int).Add(pc.Attempts, big.NewInt(1))
 
@@ -80,12 +83,14 @@ func (pc *PasswordCracker) crack(validator func(string) (bool, error), wg *sync.
 
 			pc.ProgressMutex.Unlock()
 
+			// this allows other threads to know we've found the password
 			if found {
 				pc.FoundChan <- string(currentPassword)
 				pc.Found = true
 				return
 			}
 
+			// get the next password to try (rotate by 1)
 			currentPassword = utils.RotateString(currentPassword, 1, pc.Charset)
 		}
 	}

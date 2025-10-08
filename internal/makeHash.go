@@ -14,6 +14,7 @@ func MakeHash(plaintext string, algorithm string, salt string, parameters string
 	var err error
 	var hash []byte
 
+	// bcrypt is handled differently because its hash changes every time.(we can't simply recompute hash and see if they match)
 	switch algorithm {
 	case "yescrypt":
 		saltBytes := []byte("$y$" + parameters + "$" + salt)

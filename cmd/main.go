@@ -13,6 +13,7 @@ import (
 )
 
 func main() {
+	// check args
 	if len(os.Args) < 4 {
 		fmt.Println("Usage: cracker <shadow file> <username> <number of threads>")
 		return
@@ -26,6 +27,7 @@ func main() {
 		return
 	}
 
+	// parse shadow file for given user
 	shadowResult, err := internal.ParseShadowForUser(shadowPath, username)
 	if err != nil {
 		fmt.Println("Error parsing shadow file:", err)
@@ -38,6 +40,7 @@ func main() {
 	fmt.Printf("Salt: %s\n", shadowResult.Salt)
 	fmt.Printf("Hash: %s\n", shadowResult.Hash)
 
+	// initialize a struct to be shared between workers
 	pc := &internal.PasswordCracker{
 		Charset:    []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#%^&*()_+-=.,:;?"),
 		MinLength:  3,
@@ -58,19 +61,20 @@ func main() {
 	}
 
 	password := pc.CreateWorkers(func(attempt string) (bool, error) {
-
 		// bcrypt is handled differently because its hash changes every time
 		if shadowResult.Algorithm == "bcrypt" {
 			err := bcrypt.CompareHashAndPassword([]byte(shadowResult.Raw), []byte(attempt))
 			return err == nil, nil
 		}
 
+		// recompute hash and compare with correct hash
 		attemptHash, err := internal.MakeHash(attempt, shadowResult.Algorithm, shadowResult.Salt, shadowResult.Parameters)
 
 		if err != nil {
 			return false, err
 		}
 
+		// if the hashes match, we found the password
 		return attemptHash == shadowResult.Hash, nil
 	})
 

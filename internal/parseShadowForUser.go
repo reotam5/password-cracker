@@ -41,6 +41,7 @@ func ParseShadowForUser(shadowPath string, username string) (*ShadowResult, erro
 	var line string
 	prefix := username + ":"
 
+	// look for the line that starts with the username:
 	for scanner.Scan() {
 		l := scanner.Text()
 		if strings.HasPrefix(l, prefix) {
@@ -53,6 +54,7 @@ func ParseShadowForUser(shadowPath string, username string) (*ShadowResult, erro
 		return nil, fmt.Errorf("user %s not found in shadow file", username)
 	}
 
+	// the field that contains the hash is the second field, separated by ':'
 	fields := strings.Split(line, ":")
 	if len(fields) < 2 {
 		return nil, fmt.Errorf("invalid shadow file format for user %s", username)
@@ -63,6 +65,7 @@ func ParseShadowForUser(shadowPath string, username string) (*ShadowResult, erro
 		return nil, fmt.Errorf("user %s has no password set", username)
 	}
 
+	// the hash field contains different parts separated by '$'. (ie, algo, parameters, hash)
 	hashParts := strings.Split(hashField, "$")
 	shadowResult := &ShadowResult{}
 	shadowResult.Raw = hashField

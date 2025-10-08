@@ -6,4 +6,5 @@ a-a-a:$y$j9T$oh9.tH9w4CoB906qiznOR0$lfU2j/2KrERZdC3mvrqs78yjBwM4yuCUbwU9/B0liv9:
 question-mark-xthree:$y$j9T$RHgvhajstdiS7aEKdxomZ0$AN4AxbecYLsTBqVvlp8JuLN7SxEszqwn9906meuKJk5:20367:0:99999:7:::
 b-f-cap-a:$6$WK40kGhvTLmxMIa7$.f7WXVjKbFzoCLZefF6Tk2SNj2lmAYpy0EtjItmWVqAoQKfPpSPTKNk5P.RS/dhcksvjFYKNf83hchXlfRES3/:20367:0:99999:7:::
 a-at-z:$5$CmA5OZTnocLCUukd$4ccH6NuKXLh6oI54/PPsen0XQ6zV6AAMAYJug/kBtX5:20367:0:99999:7:::
-unknown:.tH9w4CoB906qiznOR0/2KrERZdC3mvrqs78yjBwM4yuCUbwU9/B0liv9:20367:0:99999:7:::
+unknown-algo:$u$j9T$oh9.tH9w4CoB906qiznOR0$lfU2j/2KrERZdC3mvrqs78yjBwM4yuCUbwU9/B0liv9:20367:0:99999:7:::
+malformed:$y$malformed:20367:0:99999:7:::

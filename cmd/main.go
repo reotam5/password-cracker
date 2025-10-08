@@ -29,7 +29,7 @@ func main() {
 	shadowResult, err := internal.ParseShadowForUser(shadowPath, username)
 	if err != nil {
 		fmt.Println("Error parsing shadow file:", err)
-		return
+		os.Exit(1)
 	}
 
 	fmt.Printf("Cracking password for user: %s\n", shadowResult.Username)

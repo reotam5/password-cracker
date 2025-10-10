@@ -44,6 +44,7 @@ func main() {
 	pc := &internal.PasswordCracker{
 		Charset:    []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#%^&*()_+-=.,:;?"),
 		MinLength:  3,
+		MaxLength:  3,
 		NumWorkers: numThreads,
 		BatchSize:  10,
 

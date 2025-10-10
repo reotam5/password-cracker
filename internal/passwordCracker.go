@@ -14,7 +14,6 @@ import (
 type PasswordCracker struct {
 	Charset    []rune
 	MinLength  int
-	MaxLength  int
 	NumWorkers int
 	BatchSize  int
 
@@ -54,11 +53,6 @@ func (pc *PasswordCracker) crack(validator func(string) (bool, error), wg *sync.
 		for i := 0; i < pc.BatchSize; i++ {
 			// other thread found the password
 			if pc.Found {
-				return
-			}
-
-			// password not found within max length
-			if len(currentPassword) > pc.MaxLength {
 				return
 			}
 
